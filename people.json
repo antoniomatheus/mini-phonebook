@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Arto Hellas",
+    "number": "040-1234563"
+  },
+  {
+    "id": 2,
+    "name": "Dan Abramov",
+    "number": "39-44-532323"
+  },
+  {
+    "id": 3,
+    "name": "Ada Lovelace",
+    "number": "12-43-234345"
+  },
+  {
+    "id": 4,
+    "name": "Mary Poppendick",
+    "number": "040-987654"
+  }
+]
