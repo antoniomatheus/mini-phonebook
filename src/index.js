@@ -1,10 +1,25 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const Phone = require('./models/phone');
 const { errorHandler } = require('./helpers/errorHandling');
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+  })
+  .then(() => {
+    console.log('MongoDB connection established.');
+  })
+  .catch((error) => {
+    console.log(error.message);
+  });
 
 const app = express();
 
@@ -71,29 +86,36 @@ app.put('/api/phones/:id', (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.post('/api/phones', (req, res) => {
+app.post('/api/phones', async (req, res, next) => {
   const body = req.body;
 
   if (!body && !body.name && !body.number) {
     return res.status(400).json({ error: 'Wrong body arguments provided' });
   }
 
-  const newPhone = new Phone({
-    name: body.name,
-    phoneNumber: body.number,
-  });
+  Phone.findOne({ name: body.name })
+    .then((existingPhone) => {
+      if (existingPhone) {
+        Phone.findByIdAndUpdate(existingPhone.id, { ...body }, { new: true })
+          .then((updatedPhone) => {
+            res.json(updatedPhone);
+          })
+          .catch((error) => next(error));
+      } else {
+        const newPhone = new Phone({
+          name: body.name,
+          phoneNumber: body.phoneNumber,
+        });
 
-  newPhone.save().then((phone) => res.json(phone));
+        newPhone.save().then((phone) => res.json(phone));
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Application running at port: ${PORT}`);
 });
-
-// Naive implementation of id generation
-const generateId = () => {
-  return Math.floor(Math.random() * 10_000_000_000);
-};

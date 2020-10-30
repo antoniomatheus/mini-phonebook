@@ -1,19 +1,5 @@
 const mongoose = require('mongoose');
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-  })
-  .then(() => {
-    console.log('MongoDB connection established.');
-  })
-  .catch((error) => {
-    console.log(error.message);
-  });
-
 const phoneSchema = new mongoose.Schema({
   name: String,
   phoneNumber: String,
