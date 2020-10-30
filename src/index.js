@@ -47,14 +47,28 @@ app.get('/api/phones/:id', (req, res, next) => {
     });
 });
 
-app.delete('/api/phones/:id', (req, res) => {
-  Phone.deleteOne({ _id: req.params.id })
+app.delete('/api/phones/:id', (req, res, next) => {
+  Phone.findByIdAndDelete(req.params.id)
     .then(() => {
       res.status(204).end();
     })
     .catch((error) => {
-      res.status(404).json({ error });
+      next(error);
     });
+});
+
+app.put('/api/phones/:id', (req, res, next) => {
+  const body = req.body;
+
+  const updatedPhone = {
+    ...body,
+  };
+
+  Phone.findByIdAndUpdate(req.params.id, updatedPhone, { new: true })
+    .then((updatedPhone) => {
+      res.json(updatedPhone);
+    })
+    .catch((error) => next(error));
 });
 
 app.post('/api/phones', (req, res) => {

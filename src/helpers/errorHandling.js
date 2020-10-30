@@ -1,4 +1,4 @@
-export const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, request, response, next) => {
   console.log(error.message);
 
   if (error.name === 'CastError') {
@@ -6,4 +6,8 @@ export const errorHandler = (error, request, response, next) => {
   }
 
   next(error);
+};
+
+module.exports = {
+  errorHandler,
 };
