@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const Phone = require('./models/phone');
+const { errorHandler } = require('./helpers/errorHandling');
 
 const app = express();
 
@@ -31,13 +32,19 @@ app.get('/api/phones', (req, res) => {
   Phone.find({}).then((phones) => res.json(phones));
 });
 
-app.get('/api/phones/:id', (req, res) => {
+app.get('/api/phones/:id', (req, res, next) => {
   const id = req.params.id;
   Phone.findById(id)
-    .then((phone) => res.json(phone))
-    .catch(() =>
-      res.status(404).json({ error: `Phone with id: ${id} not found.` })
-    );
+    .then((phone) => {
+      if (phone) {
+        res.json(phone);
+      } else {
+        res.status(404).json({ error: `Phone with id: ${id} not found.` });
+      }
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 app.delete('/api/phones/:id', (req, res) => {
@@ -64,6 +71,8 @@ app.post('/api/phones', (req, res) => {
 
   newPhone.save().then((phone) => res.json(phone));
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
