@@ -89,26 +89,14 @@ app.put('/api/phones/:id', (req, res, next) => {
 app.post('/api/phones', async (req, res, next) => {
   const body = req.body;
 
-  Phone.findOne({ name: body.name })
-    .then((existingPhone) => {
-      if (existingPhone) {
-        Phone.findByIdAndUpdate(existingPhone.id, { ...body }, { new: true })
-          .then((updatedPhone) => {
-            res.json(updatedPhone);
-          })
-          .catch((error) => next(error));
-      } else {
-        const newPhone = new Phone({
-          name: body.name,
-          phoneNumber: body.phoneNumber,
-        });
+  const newPhone = new Phone({
+    name: body.name,
+    phoneNumber: body.phoneNumber,
+  });
 
-        newPhone
-          .save()
-          .then((phone) => res.json(phone.toJSON()))
-          .catch((error) => next(error));
-      }
-    })
+  newPhone
+    .save()
+    .then((phone) => res.json(phone.toJSON()))
     .catch((error) => next(error));
 });
 

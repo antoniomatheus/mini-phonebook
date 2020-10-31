@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const phoneSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   phoneNumber: {
     type: String,
     required: true,
   },
 });
+
+phoneSchema.plugin(uniqueValidator);
 
 phoneSchema.set('toJSON', {
   transform: (document, returnedObject) => {
