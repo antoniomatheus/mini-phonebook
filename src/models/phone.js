@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 
 const phoneSchema = new mongoose.Schema({
-  name: String,
-  phoneNumber: String,
+  name: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
 });
 
 phoneSchema.set('toJSON', {

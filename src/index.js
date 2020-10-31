@@ -89,10 +89,6 @@ app.put('/api/phones/:id', (req, res, next) => {
 app.post('/api/phones', async (req, res, next) => {
   const body = req.body;
 
-  if (!body && !body.name && !body.number) {
-    return res.status(400).json({ error: 'Wrong body arguments provided' });
-  }
-
   Phone.findOne({ name: body.name })
     .then((existingPhone) => {
       if (existingPhone) {
@@ -107,7 +103,10 @@ app.post('/api/phones', async (req, res, next) => {
           phoneNumber: body.phoneNumber,
         });
 
-        newPhone.save().then((phone) => res.json(phone));
+        newPhone
+          .save()
+          .then((phone) => res.json(phone.toJSON()))
+          .catch((error) => next(error));
       }
     })
     .catch((error) => next(error));
