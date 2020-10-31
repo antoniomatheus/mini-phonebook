@@ -26,7 +26,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
